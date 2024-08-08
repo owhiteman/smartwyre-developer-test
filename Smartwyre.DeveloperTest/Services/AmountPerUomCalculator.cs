@@ -6,11 +6,7 @@ public class AmountPerUomCalculator : IRebateCalculator
     {
         var rebateAmount = 0m;
 
-        if (product == null)
-        {
-            result.Success = false;
-        }
-        else if (!product.SupportedIncentives.HasFlag(SupportedIncentiveType.AmountPerUom))
+        if (!product.SupportedIncentives.HasFlag(SupportedIncentiveType.AmountPerUom))
         {
             result.Success = false;
         }

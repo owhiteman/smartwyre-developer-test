@@ -13,16 +13,6 @@ public class RebateCalculatorFactory : IRebateCalculatorFactory
 
     public IRebateCalculator GetCalculator(IncentiveType incentiveType)
     {
-        switch (incentiveType)
-        {
-            case IncentiveType.FixedCashAmount:
-                return _serviceProvider.GetRequiredService<FixedCashAmountCalculator>();
-            case IncentiveType.FixedRateRebate:
-                return _serviceProvider.GetRequiredService<FixedRateRebateCalculator>();
-            case IncentiveType.AmountPerUom:
-                return _serviceProvider.GetRequiredService<AmountPerUomCalculator>();
-            default:
-                throw new ArgumentException("Invalid incentive type");
-        }
+        return _serviceProvider.GetRequiredKeyedService<IRebateCalculator>(incentiveType);
     }
 }

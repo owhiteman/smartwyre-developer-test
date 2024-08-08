@@ -21,13 +21,12 @@ private readonly IRebateCalculatorFactory _calculatorFactory;
 
     public CalculateRebateResult Calculate(CalculateRebateRequest request)
     {
-
         Rebate rebate = _rebateDataStore.GetRebate(request.RebateIdentifier);
         Product product = _productDataStore.GetProduct(request.ProductIdentifier);
 
         var result = new CalculateRebateResult();
 
-        if (rebate == null)
+        if (rebate == null || product == null)
         {
             result.Success = false;
             return result;

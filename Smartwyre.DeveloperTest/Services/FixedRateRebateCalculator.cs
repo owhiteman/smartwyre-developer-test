@@ -5,11 +5,7 @@ public class FixedRateRebateCalculator : IRebateCalculator
     public decimal CalculateResult(CalculateRebateResult result, Product product, Rebate rebate, decimal volume)
     {
         var rebateAmount = 0m;
-        if (product == null)
-        {
-            result.Success = false;
-        }
-        else if (!product.SupportedIncentives.HasFlag(SupportedIncentiveType.FixedRateRebate))
+        if (!product.SupportedIncentives.HasFlag(SupportedIncentiveType.FixedRateRebate))
         {
             result.Success = false;
         }

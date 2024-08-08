@@ -17,6 +17,33 @@ class Program
         var rebateService = serviceProvider.GetService<IRebateService>();
 
         var request = new CalculateRebateRequest();
+
+        Console.WriteLine("Enter Rebate Identifier:");
+        request.RebateIdentifier = Console.ReadLine();
+        while (string.IsNullOrWhiteSpace(request.RebateIdentifier))
+        {
+            Console.WriteLine("Rebate Identifier cannot be empty. Please enter a valid identifier:");
+            request.RebateIdentifier = Console.ReadLine();
+        }
+
+        Console.WriteLine("Enter Product Identifier:");
+        request.ProductIdentifier = Console.ReadLine();
+        while (string.IsNullOrWhiteSpace(request.ProductIdentifier))
+        {
+            Console.WriteLine("Product Identifier cannot be empty. Please enter a valid identifier:");
+            request.ProductIdentifier = Console.ReadLine();
+        }
+
+        Console.WriteLine("Enter Volume:");
+        string volumeInput = Console.ReadLine();
+        decimal volume;
+        while (!decimal.TryParse(volumeInput, out volume))
+        {
+            Console.WriteLine("Invalid input for Volume. Please enter a valid decimal number:");
+            volumeInput = Console.ReadLine();
+        }
+        request.Volume = volume;
+
         var result = rebateService.Calculate(request);
         Console.WriteLine("Rebate Calculation Completed. " + result.Success);
 
@@ -30,13 +57,9 @@ class Program
         services.AddTransient<IRebateDataStore, RebateDataStore>();
         services.AddTransient<IRebateService, RebateService>();
 
-        services.AddTransient<FixedCashAmountCalculator>();
-        services.AddTransient<FixedRateRebateCalculator>();
-        services.AddTransient<AmountPerUomCalculator>();
-
-        services.AddTransient<IRebateCalculator, FixedCashAmountCalculator>(provider => provider.GetRequiredService<FixedCashAmountCalculator>());
-        services.AddTransient<IRebateCalculator, FixedRateRebateCalculator>(provider => provider.GetRequiredService<FixedRateRebateCalculator>());
-        services.AddTransient<IRebateCalculator, AmountPerUomCalculator>(provider => provider.GetRequiredService<AmountPerUomCalculator>());
+        services.AddKeyedTransient<IRebateCalculator, FixedCashAmountCalculator>(IncentiveType.FixedCashAmount);
+        services.AddKeyedTransient<IRebateCalculator, FixedRateRebateCalculator>(IncentiveType.FixedRateRebate);
+        services.AddKeyedTransient<IRebateCalculator, AmountPerUomCalculator>(IncentiveType.AmountPerUom);
 
         services.AddSingleton<IRebateCalculatorFactory, RebateCalculatorFactory>();
 
